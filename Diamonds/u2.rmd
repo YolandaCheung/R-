@@ -1,0 +1,86 @@
+---
+title: "Untitled1"
+output: html_document
+---
+
+```{r}
+library(ggplot2)
+data("diamonds")
+ggplot(aes(x=price,y=..count.., fill= cut), data=diamonds)+
+  geom_bar(stat='count')+
+    facet_wrap(~color)
+
+```
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r}
+ggplot(aes(x=table,y=price, color= cut), data=diamonds)+
+  geom_jitter()+
+   scale_x_continuous(breaks = seq(50,80,2))
+```
+
+
+```{r}
+diamonds$volume<- diamonds$x * diamonds$y * diamonds$z
+ggplot(aes(x=volume, y=log10(price), color= clarity),data=diamonds)+
+  geom_point()+
+  scale_x_continuous(limits = c(0,300))
+  scale_color_brewer(type = 'div')
+  
+```
+
+
+```{r}
+pf<- read.csv('E:/data analysis/class/EDA_Course_Materials/lesson3/pseudo_facebook.tsv',sep='\t')
+
+pf$prop_initiated <- pf$friendships_initiated / pf$friend_count
+```
+
+```{r}
+pf$year_joined <- floor(2014- pf$tenure/365)
+summary(pf$year_joined)
+table(pf$year_joined)
+pf$year_joined.bucket <- cut(pf$year_joined,
+                             c(2004,2009,2011,2012,2014))
+library(ggplot2)
+ggplot(aes(x=tenure, y=prop_initiated),data=subset(pf, !is.na(prop_initiated) & !is.na(year_joined.bucket)))+
+  geom_line(aes(color=year_joined.bucket))
+```
+
+```{r}
+ggplot(aes(x=tenure, y=prop_initiated),data=subset(pf, !is.na(prop_initiated) & !is.na(year_joined.bucket)))+
+  geom_smooth(aes(color=year_joined.bucket))
+
+
+by(pf$prop_initiated, pf$year_joined.bucket, summary)
+```
+```{r}
+ggplot(aes(x=cut,y=price/carat, color=color),data=diamonds)+
+  geom_point()+
+  facet_wrap(~clarity)
+
+```
+
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
